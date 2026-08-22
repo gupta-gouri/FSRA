@@ -8,7 +8,7 @@ from src.schemas.manifest import StatementType
 class StandardLineItem(BaseModel):
     """Normalized line item record across financial statements."""
     standard_key: str
-    raw_description: str
+    raw_description: str = ""
     cy_value: Optional[Decimal] = None
     py_value: Optional[Decimal] = None
     row_type: str = "LINE"
@@ -23,6 +23,14 @@ class StandardFinancialStatement(BaseModel):
     currency: str = "USD"
     scale: Decimal = Field(default=Decimal("1.0"))
     line_items: List[StandardLineItem] = Field(default_factory=list)
+
+    @property
+    def key_map_cy(self) -> Dict[str, Decimal]:
+        return {item.standard_key: item.cy_value for item in self.line_items if item.cy_value is not None}
+
+    @property
+    def key_map_py(self) -> Dict[str, Decimal]:
+        return {item.standard_key: item.py_value for item in self.line_items if item.py_value is not None}
 
 class TrialBalanceAccount(BaseModel):
     """Represents a single account line from the General Ledger / Trial Balance."""
