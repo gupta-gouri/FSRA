@@ -1,5 +1,4 @@
 """
-analytics/visualizations.py
 Generates Static (Matplotlib/Seaborn) and Interactive (Plotly/Recharts JSON) Visualizations.
 """
 
