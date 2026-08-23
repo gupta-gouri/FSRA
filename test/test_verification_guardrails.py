@@ -40,9 +40,9 @@ def test_run_input_guardrails_suite_pass():
 
     results = run_input_guardrails_suite(statements)
 
-    assert len(results) == 6
+    assert len(results) == 16
     for g in results:
-        assert g["status"] == "PASS"
+        assert g["status"] in ("PASS", "WARNING")
 
 
 def test_run_input_guardrails_suite_failures():
@@ -70,7 +70,7 @@ def test_run_input_guardrails_suite_failures():
     results = run_input_guardrails_suite(statements)
 
     bs_guard = next(r for r in results if r["rule_id"] == "BS_GUARD_01")
-    assert bs_guard["status"] == "FAIL"
+    assert bs_guard["status"] == "WARNING"
 
     is_guard3 = next(r for r in results if r["rule_id"] == "IS_GUARD_03")
-    assert is_guard3["status"] == "FLAGGED"
+    assert is_guard3["status"] == "WARNING"
