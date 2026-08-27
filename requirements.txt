@@ -1,0 +1,20 @@
+# Analytics
+pandas
+numpy
+statsmodels
+scipy
+matplotlib
+seaborn
+plotly
+
+# Ingestion
+openpyxl
+pdfplumber
+pymupdf
+
+# Reporting
+xlsxwriter
+reportlab
+
+# Schemas
+pydantic
