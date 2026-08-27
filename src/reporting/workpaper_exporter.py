@@ -182,11 +182,14 @@ def build_audit_workbook(audit_report: Dict[str, Any], output_path: Path) -> Pat
     ws1.set_row(r, 25)
     r += 1
 
+    proc_count = len(audit_report.get('procedures', []))
+    last_proc_row = 10 + proc_count
+
     status_val = conc.get('overall_status', 'UNKNOWN')
     ws1.write(r, 0, status_val, get_status_format(status_val))
-    ws1.write(r, 1, conc.get('total_procedures_run', 0), fmt_cell_bold)
-    ws1.write(r, 2, conc.get('procedures_passed', 0), fmt_cell_bold)
-    ws1.write(r, 3, len(findings), fmt_cell_bold)
+    ws1.write_formula(r, 1, f'=COUNTA(E11:E{last_proc_row})', fmt_cell_bold, conc.get('total_procedures_run', 0))
+    ws1.write_formula(r, 2, f'=COUNTIF(E11:E{last_proc_row}, "PASS")', fmt_cell_bold, conc.get('procedures_passed', 0))
+    ws1.write_formula(r, 3, f'=COUNTIF(E11:E{last_proc_row}, "FLAGGED") + COUNTIF(E11:E{last_proc_row}, "FAIL")', fmt_cell_bold, len(findings))
     ws1.write(r, 4, eng.get('scale', 'ONES'), fmt_cell)
     ws1.write(r, 5, eng.get('currency', 'USD'), fmt_cell)
     ws1.write(r, 6, eng.get('framework', 'US GAAP / IFRS'), fmt_cell)
@@ -253,15 +256,17 @@ def build_audit_workbook(audit_report: Dict[str, Any], output_path: Path) -> Pat
         r += 1
 
         for item in yoy_items:
+            row_idx = r + 1
             ws2.write(r, 0, item.get('statement', '-'), fmt_cell)
             ws2.write(r, 1, item.get('line_item', '-'), fmt_cell)
             ws2.write(r, 2, _clean_val(item.get('prior_period'), 0.0), fmt_cell_num)
             ws2.write(r, 3, _clean_val(item.get('current_period'), 0.0), fmt_cell_num)
-            ws2.write(r, 4, _clean_val(item.get('dollar_change'), 0.0), fmt_cell_num)
+            ws2.write_formula(r, 4, f'=D{row_idx}-C{row_idx}', fmt_cell_num, _clean_val(item.get('dollar_change'), 0.0))
             pct_val = item.get('pct_change', 0.0)
-            ws2.write(r, 5, (pct_val / 100.0) if abs(pct_val or 0.0) > 1.0 else pct_val, fmt_cell_pct)
+            formatted_pct = (pct_val / 100.0) if abs(pct_val or 0.0) > 1.0 else pct_val
+            ws2.write_formula(r, 5, f'=IF(C{row_idx}<>0, (D{row_idx}-C{row_idx})/ABS(C{row_idx}), 0)', fmt_cell_pct, formatted_pct)
             act = item.get('audit_action', 'PASS')
-            ws2.write(r, 6, act, get_status_format(act))
+            ws2.write_formula(r, 6, f'=IF(ABS(F{row_idx})>0.1, "FLAGGED", "PASS")', get_status_format(act), act)
             r += 1
         r += 1
 
@@ -276,12 +281,23 @@ def build_audit_workbook(audit_report: Dict[str, Any], output_path: Path) -> Pat
         ws2.set_row(r, 25)
         r += 1
 
+        total_assets_row = None
+        for idx, item in enumerate(cs_bs):
+            if item.get('standard_key') == 'TotalAssets':
+                total_assets_row = r + 1 + idx
+                break
+
         for item in cs_bs:
+            row_idx = r + 1
             ws2.write(r, 0, item.get('standard_key', '-'), fmt_cell)
             ws2.write(r, 1, item.get('line_item', '-'), fmt_cell)
             ws2.write(r, 2, _clean_val(item.get('value'), 0.0), fmt_cell_num)
             pct_val = item.get('common_size_bs_pct', 0.0)
-            ws2.write(r, 3, (pct_val / 100.0) if abs(pct_val or 0.0) > 1.0 else pct_val, fmt_cell_pct)
+            formatted_pct = (pct_val / 100.0) if abs(pct_val or 0.0) > 1.0 else pct_val
+            if total_assets_row:
+                ws2.write_formula(r, 3, f'=C{row_idx}/$C${total_assets_row}', fmt_cell_pct, formatted_pct)
+            else:
+                ws2.write(r, 3, formatted_pct, fmt_cell_pct)
             r += 1
 
     ws2.set_column('A:A', 22)
@@ -415,11 +431,12 @@ def build_audit_workbook(audit_report: Dict[str, Any], output_path: Path) -> Pat
         ws4.set_row(r, 25)
         r += 1
         for row in ccc_data:
+            row_idx = r + 1
             ws4.write(r, 0, str(row.get('fiscal_year', '-')), fmt_cell)
             ws4.write(r, 1, row.get('dio_days', 0.0), fmt_cell_bold)
             ws4.write(r, 2, row.get('dso_days', 0.0), fmt_cell_bold)
             ws4.write(r, 3, row.get('dpo_days', 0.0), fmt_cell_bold)
-            ws4.write(r, 4, row.get('ccc_net_days', 0.0), fmt_cell_bold)
+            ws4.write_formula(r, 4, f'=B{row_idx}+C{row_idx}-D{row_idx}', fmt_cell_bold, row.get('ccc_net_days', 0.0))
             r += 1
         r += 1
 
@@ -434,13 +451,14 @@ def build_audit_workbook(audit_report: Dict[str, Any], output_path: Path) -> Pat
         ws4.set_row(r, 25)
         r += 1
         for row in fcff_data:
+            row_idx = r + 1
             ws4.write(r, 0, str(row.get('fiscal_year', '-')), fmt_cell)
             ws4.write(r, 1, row.get('operating_income', 0.0), fmt_cell_num)
             ws4.write(r, 2, row.get('nopat', 0.0), fmt_cell_num)
             ws4.write(r, 3, row.get('depreciation_amortization', 0.0), fmt_cell_num)
             ws4.write(r, 4, row.get('capex', 0.0), fmt_cell_num)
             ws4.write(r, 5, row.get('delta_nwc', 0.0), fmt_cell_num)
-            ws4.write(r, 6, row.get('fcff', 0.0), fmt_cell_num)
+            ws4.write_formula(r, 6, f'=C{row_idx}+D{row_idx}-E{row_idx}-F{row_idx}', fmt_cell_num, row.get('fcff', 0.0))
             r += 1
 
     ws4.set_column('A:A', 22)
@@ -469,6 +487,7 @@ def build_audit_workbook(audit_report: Dict[str, Any], output_path: Path) -> Pat
 
     if findings:
         for f in findings:
+            row_idx = r + 1
             ws5.write(r, 0, f.get('id', '-'), fmt_cell)
             ws5.write(r, 1, f.get('rule_id', '-'), fmt_cell)
             sev = f.get('severity', 'HIGH')
@@ -476,7 +495,7 @@ def build_audit_workbook(audit_report: Dict[str, Any], output_path: Path) -> Pat
             ws5.write(r, 3, f.get('description', '-'), fmt_cell)
             ws5.write(r, 4, f.get('expected', 0.0), fmt_cell_num)
             ws5.write(r, 5, f.get('actual', 0.0), fmt_cell_num)
-            ws5.write(r, 6, f.get('difference', 0.0), fmt_cell_num)
+            ws5.write_formula(r, 6, f'=F{row_idx}-E{row_idx}', fmt_cell_num, f.get('difference', 0.0))
             ws5.write(r, 7, f.get('resolution', '-'), fmt_cell)
             r += 1
     else:
