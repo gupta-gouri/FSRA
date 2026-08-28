@@ -18,3 +18,10 @@ reportlab
 
 # Schemas
 pydantic
+
+# Backend
+fastapi[standard]
+pydantic-settings
+supabase
+
+
