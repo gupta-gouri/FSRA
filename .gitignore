@@ -39,6 +39,7 @@ coverage.xml
 .hypothesis/
 
 # Virtual Environments
+backend/.env
 .venv/
 venv/
 venv*/
