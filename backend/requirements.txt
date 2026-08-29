@@ -25,3 +25,6 @@ pydantic-settings
 supabase
 
 python-multipart
+
+# Testing
+pytest

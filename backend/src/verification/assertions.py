@@ -7,8 +7,8 @@ Deterministic Math Engine (28 Rules) exclusively operating on StandardFinancialS
 """
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Any, Dict, List, Optional
-from src.schemas.manifest import StatementType
-from src.schemas.statements import StandardFinancialStatement
+from backend.src.schemas.manifest import StatementType
+from backend.src.schemas.statements import StandardFinancialStatement
 
 ZERO = Decimal("0.0")
 TOLERANCE = Decimal("0.02")

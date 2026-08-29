@@ -2,7 +2,7 @@ from decimal import Decimal
 from typing import List, Optional, Dict
 from pydantic import BaseModel, Field
 
-from src.schemas.manifest import StatementType
+from backend.src.schemas.manifest import StatementType
 
 
 class StandardLineItem(BaseModel):

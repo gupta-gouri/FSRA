@@ -1,8 +1,8 @@
 from decimal import Decimal
 import pytest
 
-from src.extraction.extractor import extract_statements_from_manifest, get_scale_factor
-from src.schemas.manifest import DocumentMetadata, IngestionManifest, RawSheetPayload, StatementType
+from backend.src.extraction.extractor import extract_statements_from_manifest, get_scale_factor
+from backend.src.schemas.manifest import DocumentMetadata, IngestionManifest, RawSheetPayload, StatementType
 
 
 def test_get_scale_factor():

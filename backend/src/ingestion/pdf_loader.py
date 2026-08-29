@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import List, Union
 import pdfplumber
 
-from src.schemas.manifest import RawSheetPayload, StatementType
-from src.ingestion.pdf_scanner import discover_statement_pages
+from backend.src.schemas.manifest import RawSheetPayload, StatementType
+from backend.src.ingestion.pdf_scanner import discover_statement_pages
 
 
 def load_pdf_pages(file_path: Union[str, Path]) -> List[RawSheetPayload]:

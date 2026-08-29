@@ -1,6 +1,6 @@
 from decimal import Decimal
 import pytest
-from src.extraction.numeric_parser import parse_financial_number
+from backend.src.extraction.numeric_parser import parse_financial_number
 
 
 @pytest.mark.parametrize(

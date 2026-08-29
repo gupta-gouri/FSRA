@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List, Union
 import openpyxl
 
-from src.schemas.manifest import RawSheetPayload, StatementType
+from backend.src.schemas.manifest import RawSheetPayload, StatementType
 
 def load_excel_sheet(file_path: Union[str, Path], sheet_name: str) -> RawSheetPayload:
     """Reads a single worksheet from an Excel workbook and returns a RawSheetPayload."""

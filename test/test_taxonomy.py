@@ -1,5 +1,5 @@
 import pytest
-from src.extraction.taxonomy import TAXONOMY_MAP, normalize_line_item_key
+from backend.src.extraction.taxonomy import TAXONOMY_MAP, normalize_line_item_key
 
 
 @pytest.mark.parametrize(

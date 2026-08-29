@@ -1,6 +1,6 @@
 from decimal import Decimal
 import pytest
-from src.extraction.row_tagger import determine_row_type
+from backend.src.extraction.row_tagger import determine_row_type
 
 
 def test_determine_row_type_total():

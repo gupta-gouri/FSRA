@@ -1,14 +1,14 @@
 from decimal import Decimal
 from typing import Any, Dict, List, Optional, Union
 
-from src.schemas.manifest import IngestionManifest, StatementType
-from src.schemas.statements import StandardFinancialStatement, StandardLineItem, StandardTrialBalance
-from src.extraction.stitcher import stitch_statement_pages
-from src.extraction.column_extractor import detect_table_structure
-from src.extraction.numeric_parser import parse_financial_number
-from src.extraction.row_tagger import determine_row_type
-from src.extraction.taxonomy import normalize_line_item_key
-from src.extraction.tb_extractor import extract_trial_balance
+from backend.src.schemas.manifest import IngestionManifest, StatementType
+from backend.src.schemas.statements import StandardFinancialStatement, StandardLineItem, StandardTrialBalance
+from backend.src.extraction.stitcher import stitch_statement_pages
+from backend.src.extraction.column_extractor import detect_table_structure
+from backend.src.extraction.numeric_parser import parse_financial_number
+from backend.src.extraction.row_tagger import determine_row_type
+from backend.src.extraction.taxonomy import normalize_line_item_key
+from backend.src.extraction.tb_extractor import extract_trial_balance
 
 SCALE_MULTIPLIERS: Dict[str, Decimal] = {
     "BILLIONS": Decimal("1000000000.0"),

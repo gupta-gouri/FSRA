@@ -2,10 +2,10 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 import pytest
 
-from src.ingestion.orchestrator import ingest_sources
-from src.ingestion.pdf_loader import load_pdf_pages
-from src.ingestion.pdf_scanner import discover_statement_pages
-from src.schemas.manifest import StatementType
+from backend.src.ingestion.orchestrator import ingest_sources
+from backend.src.ingestion.pdf_loader import load_pdf_pages
+from backend.src.ingestion.pdf_scanner import discover_statement_pages
+from backend.src.schemas.manifest import StatementType
 
 
 def test_pdf_discovery_and_scanning_mocked():

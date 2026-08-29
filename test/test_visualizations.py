@@ -2,7 +2,7 @@ from decimal import Decimal
 import pandas as pd
 import pytest
 
-from src.analytics.visualizations import (
+from backend.src.analytics.visualizations import (
     plot_cash_flow_waterfall,
     plot_ccc_breakdown,
     plot_cash_runway_gauge,

@@ -9,9 +9,9 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 
-from src.schemas.manifest import StatementType
-from src.schemas.statements import StandardFinancialStatement
-from src.analytics.core_analytics import _statement_to_dataframe, _get_metric
+from backend.src.schemas.manifest import StatementType
+from backend.src.schemas.statements import StandardFinancialStatement
+from backend.src.analytics.core_analytics import _statement_to_dataframe, _get_metric
 
 _g = _get_metric
 

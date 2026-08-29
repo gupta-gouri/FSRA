@@ -1,16 +1,16 @@
 from pathlib import Path
 from typing import List, Union
 
-from src.schemas.manifest import (
+from backend.src.schemas.manifest import (
     DocumentMetadata,
     IngestionManifest,
     RawSheetPayload,
     StatementType,
 )
-from src.ingestion.classifier import classify_sheet, extract_metadata
-from src.ingestion.excel_loader import load_excel_sources
-from src.ingestion.pdf_loader import load_pdf_pages
-from src.ingestion.resolver import resolve_statement_conflicts, REQUIRED_STATEMENTS
+from backend.src.ingestion.classifier import classify_sheet, extract_metadata
+from backend.src.ingestion.excel_loader import load_excel_sources
+from backend.src.ingestion.pdf_loader import load_pdf_pages
+from backend.src.ingestion.resolver import resolve_statement_conflicts, REQUIRED_STATEMENTS
 
 def ingest_sources(
     file_paths: List[Union[str, Path]],

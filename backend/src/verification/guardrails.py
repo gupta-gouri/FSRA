@@ -4,8 +4,8 @@ Input Assumption Guardrails (16 Rules) using exact Python Decimal arithmetic.
 
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Any, Dict, List, Optional
-from src.schemas.manifest import StatementType
-from src.schemas.statements import StandardFinancialStatement
+from backend.src.schemas.manifest import StatementType
+from backend.src.schemas.statements import StandardFinancialStatement
 
 ZERO = Decimal("0.00")
 HUNDRED = Decimal("100.00")

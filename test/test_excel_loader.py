@@ -2,7 +2,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 import pytest
 
-from src.ingestion.excel_loader import load_excel_sources, load_excel_sheet
+from backend.src.ingestion.excel_loader import load_excel_sources, load_excel_sheet
 
 
 def test_load_excel_sources_success():

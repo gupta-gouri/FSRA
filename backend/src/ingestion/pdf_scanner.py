@@ -2,7 +2,7 @@ import re
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
 import pymupdf
-from src.schemas.manifest import StatementType
+from backend.src.schemas.manifest import StatementType
 
 STATEMENT_TOC_PATTERNS = {
     StatementType.BALANCE_SHEET: r"(?:balance\s+sheet|statement\s+of\s+financial\s+position)",

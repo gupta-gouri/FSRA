@@ -1,9 +1,9 @@
 from decimal import Decimal
 import pytest
 
-from src.schemas.manifest import DocumentMetadata, IngestionManifest, StatementType
-from src.schemas.statements import StandardFinancialStatement, StandardLineItem
-from src.verification.orchestrator import MathEngine
+from backend.src.schemas.manifest import DocumentMetadata, IngestionManifest, StatementType
+from backend.src.schemas.statements import StandardFinancialStatement, StandardLineItem
+from backend.src.verification.orchestrator import MathEngine
 
 
 def test_math_engine_audit_report():

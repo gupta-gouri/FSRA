@@ -8,23 +8,23 @@ from pathlib import Path
 from typing import Any, Dict
 import pandas as pd
 
-from src.verification.orchestrator import MathEngine
-from src.schemas.manifest import IngestionManifest, StatementType
-from src.schemas.statements import StandardFinancialStatement
-from src.analytics.core_analytics import (
+from backend.src.verification.orchestrator import MathEngine
+from backend.src.schemas.manifest import IngestionManifest, StatementType
+from backend.src.schemas.statements import StandardFinancialStatement
+from backend.src.analytics.core_analytics import (
     calculate_horizontal_vertical_analysis,
     calculate_financial_ratios,
     evaluate_relationship_disconnects,
 )
-from src.analytics.forensics import (
+from backend.src.analytics.forensics import (
     compute_altman_z_score,
     compute_beneish_m_score,
     compute_sloan_accrual_ratio,
     compute_dupont_roe_breakdown,
     compute_benfords_law_analysis,
 )
-from src.analytics.historical_analytics import HistoricalAnalyticsEngine
-from src.reporting.workpaper_exporter import build_audit_workbook, build_audit_pdf, sanitize_filename
+from backend.src.analytics.historical_analytics import HistoricalAnalyticsEngine
+from backend.src.reporting.workpaper_exporter import build_audit_workbook, build_audit_pdf, sanitize_filename
 
 
 def generate_full_audit_package(

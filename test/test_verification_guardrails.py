@@ -1,9 +1,9 @@
 from decimal import Decimal
 import pytest
 
-from src.schemas.manifest import StatementType
-from src.schemas.statements import StandardFinancialStatement, StandardLineItem
-from src.verification.guardrails import run_input_guardrails_suite
+from backend.src.schemas.manifest import StatementType
+from backend.src.schemas.statements import StandardFinancialStatement, StandardLineItem
+from backend.src.verification.guardrails import run_input_guardrails_suite
 
 
 def test_run_input_guardrails_suite_pass():

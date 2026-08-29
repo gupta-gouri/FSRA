@@ -1,9 +1,9 @@
 from decimal import Decimal
 from typing import Dict, List, Optional
-from src.schemas.manifest import RawSheetPayload
-from src.schemas.statements import StandardTrialBalance, TrialBalanceAccount, LeadSheetSummary
-from src.extraction.numeric_parser import parse_financial_number
-from src.extraction.lead_sheet_mapper import map_account_to_lead_sheet
+from backend.src.schemas.manifest import RawSheetPayload
+from backend.src.schemas.statements import StandardTrialBalance, TrialBalanceAccount, LeadSheetSummary
+from backend.src.extraction.numeric_parser import parse_financial_number
+from backend.src.extraction.lead_sheet_mapper import map_account_to_lead_sheet
 
 
 def extract_trial_balance(

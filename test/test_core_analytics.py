@@ -3,9 +3,9 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from src.schemas.manifest import StatementType
-from src.schemas.statements import StandardFinancialStatement, StandardLineItem
-from src.analytics.core_analytics import (
+from backend.src.schemas.manifest import StatementType
+from backend.src.schemas.statements import StandardFinancialStatement, StandardLineItem
+from backend.src.analytics.core_analytics import (
     _statement_to_dataframe,
     _get_metric,
     _g,

@@ -1,6 +1,6 @@
 import re
 from typing import Dict, List
-from src.schemas.manifest import RawSheetPayload, StatementType
+from backend.src.schemas.manifest import RawSheetPayload, StatementType
 
 def is_likely_header_row(row: List[any]) -> bool:
     """Detects if a row is a table column header"""

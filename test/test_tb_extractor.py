@@ -1,6 +1,6 @@
 from decimal import Decimal
-from src.extraction.tb_extractor import extract_trial_balance
-from src.schemas.manifest import RawSheetPayload, StatementType
+from backend.src.extraction.tb_extractor import extract_trial_balance
+from backend.src.schemas.manifest import RawSheetPayload, StatementType
 
 
 def test_extract_trial_balance_success():

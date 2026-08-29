@@ -61,7 +61,7 @@ async def upload_file(project_id: UUID = Form(...), file: UploadFile = File(...)
         "file_path": storage_path,
         "file_type": file_ext,
         "file_size_bytes": file_size,
-        "status": file.status
+        "status": "draft"
     }
 
     res = supabase.table("files").insert(file_record).execute()

@@ -3,10 +3,10 @@ from pathlib import Path
 import pytest
 import pandas as pd
 
-from src.schemas.manifest import IngestionManifest, DocumentMetadata, StatementType
-from src.schemas.statements import StandardFinancialStatement, StandardLineItem
-from src.reporting.workpaper_exporter import build_audit_workbook, build_audit_pdf
-from src.reporting.report_orchestrator import generate_full_audit_package
+from backend.src.schemas.manifest import IngestionManifest, DocumentMetadata, StatementType
+from backend.src.schemas.statements import StandardFinancialStatement, StandardLineItem
+from backend.src.reporting.workpaper_exporter import build_audit_workbook, build_audit_pdf
+from backend.src.reporting.report_orchestrator import generate_full_audit_package
 
 
 def create_sample_statements():
@@ -64,12 +64,12 @@ def test_build_audit_workbook_xlsxwriter(tmp_path):
     statements = create_sample_statements()
     manifest = create_sample_manifest()
 
-    from src.verification.orchestrator import MathEngine
+    from backend.src.verification.orchestrator import MathEngine
     engine = MathEngine(statements=statements, manifest=manifest)
     audit_report = engine.generate_structured_audit_report()
 
     # Add analytics sample dict
-    from src.analytics.core_analytics import calculate_horizontal_vertical_analysis, calculate_financial_ratios, evaluate_relationship_disconnects
+    from backend.src.analytics.core_analytics import calculate_horizontal_vertical_analysis, calculate_financial_ratios, evaluate_relationship_disconnects
     yoy_df, cs_bs, cs_is = calculate_horizontal_vertical_analysis(statements[StatementType.BALANCE_SHEET], statements[StatementType.INCOME_STATEMENT])
     ratios_df = calculate_financial_ratios(statements[StatementType.BALANCE_SHEET], statements[StatementType.INCOME_STATEMENT])
     disc_df = evaluate_relationship_disconnects(statements)
@@ -92,7 +92,7 @@ def test_build_audit_pdf_reportlab(tmp_path):
     statements = create_sample_statements()
     manifest = create_sample_manifest()
 
-    from src.verification.orchestrator import MathEngine
+    from backend.src.verification.orchestrator import MathEngine
     engine = MathEngine(statements=statements, manifest=manifest)
     audit_report = engine.generate_structured_audit_report()
 

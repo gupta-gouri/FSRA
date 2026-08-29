@@ -1,6 +1,6 @@
 import pytest
-from src.schemas.manifest import RawSheetPayload, StatementType
-from src.ingestion.resolver import resolve_statement_conflicts, _prompt_user_choice
+from backend.src.schemas.manifest import RawSheetPayload, StatementType
+from backend.src.ingestion.resolver import resolve_statement_conflicts, _prompt_user_choice
 
 
 def test_resolve_no_conflicts():

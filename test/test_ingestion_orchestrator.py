@@ -2,9 +2,9 @@ from pathlib import Path
 from decimal import Decimal
 import pytest
 
-from src.schemas.manifest import StatementType, RawSheetPayload, IngestionManifest
-from src.schemas.statements import StandardFinancialStatement, StandardLineItem
-from src.ingestion.orchestrator import ingest_sources
+from backend.src.schemas.manifest import StatementType, RawSheetPayload, IngestionManifest
+from backend.src.schemas.statements import StandardFinancialStatement, StandardLineItem
+from backend.src.ingestion.orchestrator import ingest_sources
 
 
 def test_ingest_sources_nonexistent_file():

@@ -1,6 +1,6 @@
 import re
 from typing import Any, List, Optional, Union
-from src.schemas.manifest import StatementType, DocumentMetadata, RawSheetPayload
+from backend.src.schemas.manifest import StatementType, DocumentMetadata, RawSheetPayload
 
 # 1. Keyword mappings for sheet name / TOC title classification
 NAME_KEYWORDS = {

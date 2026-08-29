@@ -1,9 +1,9 @@
 from decimal import Decimal
 import pytest
 
-from src.schemas.manifest import StatementType
-from src.schemas.statements import StandardFinancialStatement, StandardLineItem
-from src.analytics.forensics import (
+from backend.src.schemas.manifest import StatementType
+from backend.src.schemas.statements import StandardFinancialStatement, StandardLineItem
+from backend.src.analytics.forensics import (
     compute_altman_z_score,
     compute_beneish_m_score,
     compute_sloan_accrual_ratio,

@@ -1,5 +1,5 @@
 import pytest
-from src.extraction.column_extractor import _extract_year_from_header, detect_table_structure
+from backend.src.extraction.column_extractor import _extract_year_from_header, detect_table_structure
 
 
 def test_extract_year_from_header_4digit():

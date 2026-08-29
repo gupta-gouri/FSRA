@@ -1,5 +1,5 @@
 import pytest
-from src.extraction.lead_sheet_mapper import LEAD_SHEET_TAXONOMY, map_account_to_lead_sheet
+from backend.src.extraction.lead_sheet_mapper import LEAD_SHEET_TAXONOMY, map_account_to_lead_sheet
 
 
 @pytest.mark.parametrize(

@@ -1,5 +1,5 @@
-from src.extraction.stitcher import is_likely_header_row, stitch_statement_pages
-from src.schemas.manifest import RawSheetPayload, StatementType
+from backend.src.extraction.stitcher import is_likely_header_row, stitch_statement_pages
+from backend.src.schemas.manifest import RawSheetPayload, StatementType
 
 
 def test_is_likely_header_row():

@@ -1,5 +1,5 @@
 from typing import Dict, List, Optional, Set
-from src.schemas.manifest import RawSheetPayload, StatementType
+from backend.src.schemas.manifest import RawSheetPayload, StatementType
 
 # Mandatory statements required to proceed with audit tie-outs
 REQUIRED_STATEMENTS = [

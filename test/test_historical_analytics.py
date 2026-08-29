@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from src.analytics.historical_analytics import HistoricalAnalyticsEngine
+from backend.src.analytics.historical_analytics import HistoricalAnalyticsEngine
 
 
 def create_sample_historical_df():

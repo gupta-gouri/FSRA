@@ -2,9 +2,9 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 import pytest
 
-from src.ingestion.classifier import classify_sheet, extract_metadata, extract_metadata_from_grid
-from src.ingestion.excel_loader import load_excel_sources
-from src.schemas.manifest import RawSheetPayload, StatementType
+from backend.src.ingestion.classifier import classify_sheet, extract_metadata, extract_metadata_from_grid
+from backend.src.ingestion.excel_loader import load_excel_sources
+from backend.src.schemas.manifest import RawSheetPayload, StatementType
 
 
 @pytest.mark.parametrize(

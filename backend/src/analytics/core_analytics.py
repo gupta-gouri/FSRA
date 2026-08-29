@@ -8,8 +8,8 @@
 from typing import Dict, Optional, Tuple
 import pandas as pd
 import numpy as np
-from src.schemas.manifest import StatementType
-from src.schemas.statements import StandardFinancialStatement
+from backend.src.schemas.manifest import StatementType
+from backend.src.schemas.statements import StandardFinancialStatement
 
 def _statement_to_dataframe(stmt: Optional[StandardFinancialStatement]) -> pd.DataFrame:
     """Converts a StandardFinancialStatement into a pandas DataFrame indexed by standard_key."""
