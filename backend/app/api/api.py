@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.endpoints import clients, projects
+from app.api.endpoints import clients, projects, files
 
 api_router = APIRouter()
 
@@ -9,3 +9,4 @@ async def health_check():
 
 api_router.include_router(clients.router, prefix = "/clients", tags = ["Clients"])
 api_router.include_router(projects.router, prefix = "/projects", tags = ["Projects"])
+api_router.include_router(files.router, prefix = "/files", tags = ["Files"])
