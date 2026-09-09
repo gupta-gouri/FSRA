@@ -1,79 +1,49 @@
-# Byte-compiled / optimized / DLL files
+# Python & Byte-compiled files
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Pytest & Testing
 .pytest_cache/
 .coverage
-.coverage.*
 htmlcov/
 .tox/
-.nox/
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
 
 # Virtual Environments
-.env
-backend/.env
 .venv/
 venv/
-venv*/
-env/
-env*/
 ENV/
-env.bak/
-venv.bak/
+env/
 
-# IDEs & Editors
+# Environment Variables & Secrets
+.env
+*.env
+backend/.env
+frontend/.env.local
+
+# Audit Pipeline Generated Output & Temp Files
+audit_output/
+*.xlsx
+!sample_audit_input.xlsx
+*.pdf
+*.log
+
+# Frontend (Node / Next.js / React)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/.cache/
+frontend/out/
+
+# IDE & OS Metadata
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
-.project
-.pydevproject
-.settings/
-
-# OS generated files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
+ehthumbs.db
 
-# Logs and databases
-*.log
-*.sqlite
-*.db
-
-# Antigravity & Scratch files
-tt.py
+# Scratch & Temporary Files
 scratch/
+tt.py
