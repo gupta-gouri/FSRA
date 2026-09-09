@@ -1,8 +1,10 @@
 import tempfile
 import os
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Any
 from uuid import UUID
+from decimal import Decimal
+import numpy as np
 from fastapi import APIRouter, BackgroundTasks, HTTPException, status
 from app.core.supabase import supabase
 from app.services.service import AuditService
@@ -10,6 +12,38 @@ from app.services.service import AuditService
 router = APIRouter()
 STORAGE_BUCKET = "audit-files"
 SIGNED_URL_EXPIRY = 86400  # 24 hours link
+
+import math
+
+def sanitize_for_json(obj: Any) -> Any:
+    """Recursively converts Decimals, numpy types, NaNs, and Infs into JSON-compliant primitives."""
+    if isinstance(obj, dict):
+        return {str(k): sanitize_for_json(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [sanitize_for_json(i) for i in obj]
+    elif isinstance(obj, tuple):
+        return [sanitize_for_json(i) for i in obj]
+    elif isinstance(obj, Decimal):
+        val = float(obj)
+        if math.isnan(val) or math.isinf(val):
+            return None
+        return val
+    elif isinstance(obj, float):
+        if math.isnan(obj) or math.isinf(obj):
+            return None
+        return obj
+    elif isinstance(obj, (np.integer, np.int64, np.int32)):
+        return int(obj)
+    elif isinstance(obj, (np.floating, np.float64, np.float32)):
+        val = float(obj)
+        if math.isnan(val) or math.isinf(val):
+            return None
+        return val
+    elif isinstance(obj, np.ndarray):
+        return [sanitize_for_json(i) for i in obj.tolist()]
+    elif isinstance(obj, set):
+        return list(obj)
+    return obj
 
 def _generate_signed_url(storage_path: str) -> Optional[str]:
     """Generates a temporary signed download URL for files stored in Supabase private bucket."""
@@ -97,7 +131,7 @@ def run_audit_pipeline_bg(project_id: UUID, file_records: List[dict]):
                 except Exception as upload_err:
                     print(f"Failed to upload Excel deliverable: {str(upload_err)}")
 
-        # 5. Map output dictionaries and persist findings & storage URLs into database
+        # 5. Map output dictionaries, sanitize JSON types (Decimals -> floats), and persist into database
         result_payload = {
             "project_id": str(project_id),
             "verification_data": audit_output.get("verification"),
@@ -113,7 +147,12 @@ def run_audit_pipeline_bg(project_id: UUID, file_records: List[dict]):
             }
         }
 
-        supabase.table("audit_results").insert(result_payload).execute()
+        sanitized_payload = sanitize_for_json(result_payload)
+
+        try:
+            supabase.table("audit_results").insert(sanitized_payload).execute()
+        except Exception as db_err:
+            print(f"Warning: Could not insert into 'audit_results' table: {str(db_err)}")
 
         # 6. Mark project status as completed
         supabase.table("projects").update({"status": "completed"}).eq("id", str(project_id)).execute()
@@ -168,10 +207,21 @@ async def run_project_audit(project_id: UUID, background_tasks: BackgroundTasks)
 @router.get("/results/{project_id}")
 async def get_audit_results(project_id: UUID):
     """Fetches completed audit results from database for a project."""
-    res = supabase.table("audit_results").select("*").eq("project_id", str(project_id)).order("created_at", desc=True).execute()
-    if not res.data:
+    try:
+        res = supabase.table("audit_results").select("*").eq("project_id", str(project_id)).order("created_at", desc=True).execute()
+        if not res.data:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail="No audit results found for this project. Check if processing is complete."
+            )
+        return res.data[0]
+    except Exception as e:
+        if "audit_results" in str(e):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Table 'audit_results' missing in Supabase. Please run the SQL DDL migration script."
+            )
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail="No audit results found for this project. Check if processing is complete."
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch audit results: {str(e)}"
         )
-    return res.data[0]
