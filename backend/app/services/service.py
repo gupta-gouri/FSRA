@@ -85,14 +85,21 @@ class AuditService:
         historical_df: Optional[pd.DataFrame] = None
     ) -> Dict[str, Any]:
         """Stage 4: Executes core Financial analytics, Forensics risk scoring"""
-        analysis_df = calculate_horizontal_vertical_analysis(statements)
-        ratios = calculate_financial_ratios(statements)
-        disconnects = evaluate_relationship_disconnects(statements)
+        bs_stmt = statements.get(StatementType.BALANCE_SHEET)
+        is_stmt = statements.get(StatementType.INCOME_STATEMENT)
+        cfs_stmt = statements.get(StatementType.CASH_FLOW_STATEMENT)
 
-        altman_z = compute_altman_z_score(statements)
-        beneish_m = compute_beneish_m_score(statements)
-        sloan_accrual = compute_sloan_accrual_ratio(statements)
-        dupont_roe = compute_dupont_roe_breakdown(statements)
+        yoy_df, cs_bs, cs_is = calculate_horizontal_vertical_analysis(bs_stmt, is_stmt)
+        ratios_df = calculate_financial_ratios(bs_stmt, is_stmt)
+        disconnects_df = evaluate_relationship_disconnects(statements)
+
+        ratios = ratios_df.to_dict(orient="records") if ratios_df is not None and not ratios_df.empty else []
+        disconnects = disconnects_df.to_dict(orient="records") if disconnects_df is not None and not disconnects_df.empty else []
+
+        altman_z = compute_altman_z_score(bs_stmt, is_stmt)
+        beneish_m = compute_beneish_m_score(bs_stmt, is_stmt, cfs_stmt)
+        sloan_accrual = compute_sloan_accrual_ratio(bs_stmt, is_stmt, cfs_stmt)
+        dupont_roe = compute_dupont_roe_breakdown(bs_stmt, is_stmt)
         benford_law = compute_benfords_law_analysis(statements)
 
         historical_report = None
@@ -103,7 +110,7 @@ class AuditService:
         return {
             "ratios": ratios,
             "disconnects": disconnects,
-            "analysis_table": analysis_df.to_dict(orient="records") if not analysis_df.empty else [],
+            "analysis_table": yoy_df.reset_index().to_dict(orient="records") if yoy_df is not None and not yoy_df.empty else [],
             "forensics": {
                 "altman_z_score": altman_z,
                 "beneish_m_score": beneish_m,
@@ -136,18 +143,18 @@ class AuditService:
 
         # 2. Time-Series Forecasting (Holt-Winters & ARIMA)
         if series_data and len(series_data) >= 4:
-            hw_model = forecast_holt_winters(series_data, steps=forecast_years)
-            arima_model = forecast_arima_sarimax(series_data, steps=forecast_years)
+            hw_model = forecast_holt_winters(series_data, forecast_periods=forecast_years)
+            arima_model = forecast_arima_sarimax(series_data, forecast_periods=forecast_years)
             forecast_results["holt_winters"] = hw_model
             forecast_results["arima_sarimax"] = arima_model
 
         # 3. Monte Carlo Stochastic Simulation (1,000 runs)
         rev_base = base_year_data.get("revenue", 1000000.0)
         monte_carlo = run_monte_carlo_simulation(
-            base_val=rev_base,
+            base_revenue=rev_base,
             mean_growth=0.08,
             volatility=0.15,
-            years=forecast_years,
+            forecast_years=forecast_years,
             num_simulations=num_simulations
         )
         forecast_results["monte_carlo_simulation"] = monte_carlo
@@ -265,7 +272,9 @@ class AuditService:
         cls,
         file_paths: List[Union[str, Path]],
         output_dir: Path = Path("audit_output"),
-        apply_scale: bool = True
+        apply_scale: bool = True,
+        client_name: Optional[str] = None,
+        audit_year: Optional[int] = None
     ) -> Dict[str, Any]:
         """
         Runs the complete 7-stage FSRA audit, forecasting, visualization, 
@@ -275,6 +284,10 @@ class AuditService:
         # Stage 1: Ingestion & Statement Classification
         # -------------------------------------------------------------
         manifest = cls.stage1_ingest(file_paths)
+        if client_name and not manifest.metadata.client_name:
+            manifest.metadata.client_name = client_name
+        if audit_year and not manifest.metadata.period_ended:
+            manifest.metadata.period_ended = f"FY {audit_year}"
 
         # -------------------------------------------------------------
         # Stage 2: Financial Statement & Trial Balance Extraction
