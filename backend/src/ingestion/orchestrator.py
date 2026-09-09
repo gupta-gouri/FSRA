@@ -17,6 +17,7 @@ def ingest_sources(
     resolve_conflicts: bool = False,
     interactive: bool = False
 ) -> IngestionManifest:
+    
     """Unified Stage 1 Entry point:
     Accepts any combination of Excel workbooks (.xlsx, .xls, .xlsm) and PDF reports (.pdf) ,
     extracts pages/sheets into uniform grids and raw text, 

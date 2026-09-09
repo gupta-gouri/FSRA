@@ -8,6 +8,8 @@ router = APIRouter()
 
 @router.post("/", response_model = ProjectResponse, status_code = status.HTTP_201_CREATED)
 async def create_project(payload: ProjectCreate):
+    """Creates a new fiscal-year audit engagement container for a client"""
+
     project_data = payload.model_dump(mode = "json", exclude_unset = True)
     res = supabase.table("projects").insert(project_data).execute()
 
@@ -20,6 +22,8 @@ async def create_project(payload: ProjectCreate):
 
 @router.get("/", response_model = List[ProjectResponse])
 async def list_projects(client_id: Optional[UUID] = Query(None, description = "Filter by client ID")):
+    """Lists historical and active audit projects"""
+
     query = supabase.table("projects").select("*")
     if client_id:
         query = query.eq("client_id", str(client_id))
@@ -29,6 +33,8 @@ async def list_projects(client_id: Optional[UUID] = Query(None, description = "F
 
 @router.get("/{project_id}", response_model = ProjectResponse)
 async def get_project(project_id: UUID):
+    """Fetches metadata for a specific audit engagement"""
+
     res = supabase.table("projects").select("*").eq("id", str(project_id)).execute()
     if not res.data:
         raise HTTPException(
@@ -39,6 +45,8 @@ async def get_project(project_id: UUID):
 
 @router.patch("/{project_id}", response_model = ProjectResponse)
 async def update_project(project_id: UUID, payload: ProjectUpdate):
+    """Updates project details"""
+
     update_data = payload.model_dump(mode = "json", exclude_unset = True)
     if not update_data:
         raise HTTPException(
@@ -55,6 +63,8 @@ async def update_project(project_id: UUID, payload: ProjectUpdate):
 
 @router.delete("/{project_id}", status_code = status.HTTP_204_NO_CONTENT)
 async def delete_project(project_id: UUID):
+    """Deletes a audit project"""
+    
     res = supabase.table("projects").delete().eq("id", str(project_id)).execute()
     if not res.data:
         raise HTTPException(

@@ -8,23 +8,29 @@ router = APIRouter()
 
 @router.post("/", response_model=ClientResponse, status_code=status.HTTP_201_CREATED)
 async def create_client(payload: ClientCreate):
+    """Onboards a company by creating its foundational organizational profile."""
+
     client_data = payload.model_dump(exclude_unset=True)
     res = supabase.table("clients").insert(client_data).execute()
     
     if not res.data:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Failed to create client entity."
+            detail="Failed to create client profile."
         )
     return res.data[0]
 
 @router.get("/", response_model=List[ClientResponse])
 async def list_clients():
+    """Lists registered client profiles."""
+
     res = supabase.table("clients").select("*").order("created_at", desc=True).execute()
     return res.data
 
 @router.get("/{client_id}", response_model=ClientResponse)
-async def get_client(client_id: UUID):
+async def get_client_by_id(client_id: UUID):
+    """Retrieves the company metadata profile by its ID"""
+    
     res = supabase.table("clients").select("*").eq("id", str(client_id)).execute()
     if not res.data:
         raise HTTPException(
@@ -35,6 +41,8 @@ async def get_client(client_id: UUID):
 
 @router.patch("/{client_id}", response_model=ClientResponse)
 async def update_client(client_id: UUID, payload: ClientUpdate):
+    """Updates the company metadata"""
+
     update_data = payload.model_dump(exclude_unset=True)
     if not update_data:
         raise HTTPException(
@@ -52,6 +60,8 @@ async def update_client(client_id: UUID, payload: ClientUpdate):
 
 @router.delete("/{client_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_client(client_id: UUID):
+    """Deletes the company profile and cascades to all its associated project/files"""
+    
     res = supabase.table("clients").delete().eq("id", str(client_id)).execute()
     if not res.data:
         raise HTTPException(
